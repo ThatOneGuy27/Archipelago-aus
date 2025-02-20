@@ -1,187 +1,317 @@
 from typing import NamedTuple
 from BaseClasses import Location
+from .Names import *
 
 class LocData(NamedTuple):
     id: int
     region: str
+
+
 class AUSLocation(Location):
     game: str = "An Untitled Story"
-    
+
     # override constructor to automatically mark event locations as such
-    def __init__(self, player: int, name = "", code = None, parent = None) -> None:
+    def __init__(self, player: int, name="", code=None, parent=None) -> None:
         super(AUSLocation, self).__init__(player, name, code, parent)
         self.event = code is None
 
-location_table = {
-    "Nightwalk_jump_1": LocData(72001, "Menu"),
-    "Coldkeep_high_branch": LocData(72002, "Menu"),
-    "Stonecastle_heart_door": LocData(72003, "Menu"),
-    "Skytown_shop_6": LocData(72004, "Menu"),
-    "Farfall_bottom_heart_door": LocData(72005, "Farfall"),
-    "Grotto_djump": LocData(72006, "Menu"),
-    "Skytown_pit_right": LocData(72007, "Menu"),
-    "Firecage_top_left_gate": LocData(72008, "Firecage"),
-    "Nightclimb_duck": LocData(72009, "Nightclimb"),
-    "Coldkeep_boss": LocData(72010, "Menu"),
-    "Skysand_bot_left": LocData(72011, "Skysand"),
-    # "Skytown_tp": LocData(72012, "Menu"),
-    "Stonecastle_rock_boss": LocData(72013, "Menu"),
-    "Deeptower_cannon_boss": LocData(72014, "Menu"),
-    "Skytown_shop_7": LocData(72015, "Menu"),
-    "Firecage_boss": LocData(72016, "Firecage"),
-    "Nightwalk_hatch": LocData(72017, "Menu"),
-    "Deepdive_shaft": LocData(72018, "Deepdive"),
-    "Deepdive_left_ceiling": LocData(72019, "Deepdive"),
-    "Bonus_1": LocData(72020, "Firecage"),
-    "Deepdive_shaft_mid_right": LocData(72021, "Deepdive"),
-    "Deeptower_top_entrance": LocData(72022, "Curtain"),
-    "Mountside_right_heart_door": LocData(72023, "Mountside"),
-    "Strangecastle": LocData(72024, "Strangecastle"),
-    "Deeptower_heart": LocData(72101, "Menu"),
-    "Coldkeep_low_branch": LocData(72102, "Menu"),
-    "Nightwalk_shrine_torches": LocData(72103, "Menu"),
-    "Skytown_pit_left": LocData(72104, "Menu"),
-    "Nightclimb_right_heart": LocData(72105, "Nightclimb"),
-    "Nightclimb_wall_heart": LocData(72106, "Nightclimb"),
-    "Grotto_mural_heart": LocData(72107, "Menu"),
-    "Nightclimb_top_heart": LocData(72108, "Nightclimb"),
-    "Skytown_tower_heart": LocData(72109, "Nightclimb"),
-    "Skytown_red_heart": LocData(72110, "Menu"),
-    "Skytown_yellow_heart": LocData(72111, "Menu"),
-    "Skytown_shop_1": LocData(72112, "Menu"),
-    "Skytown_shop_2": LocData(72113, "Menu"),
-    "Skytown_shop_3": LocData(72114, "Menu"),
-    "Skytown_shop_4": LocData(72115, "Menu"),
-    "Skytown_shop_5": LocData(72116, "Menu"),
-    "Nightwalk_sky_heart": LocData(72117, "Menu"),
-    "Farfall_kill_3": LocData(72118, "Farfall"),
-    "Stonecastle_hidden_heart": LocData(72119, "Menu"),
-    "Nightwalk_block_heart": LocData(72120, "Menu"),
-    "Farfall_yellow_heart_door": LocData(72121, "Farfall"),
-    "Farfall_bottom_heart": LocData(72122, "Farfall"),
-    "Firecage_top_heart_door": LocData(72123, "Firecage"),
-    "Firecage_top": LocData(72124, "Firecage"),
-    "Firecage_bot_left_secret": LocData(72125, "Firecage"),
-    "Nightclimb_duck_heart": LocData(72126, "Nightclimb"),
-    "Firecage_mid": LocData(72127, "Firecage"),
-    "Firecage_mid_heart_door": LocData(72128, "Firecage"),
-    "Firecage_bot": LocData(72129, "Firecage"),
-    "Farfall_3_balloons": LocData(72130, "Bottom"),
-    "Bottom_heart": LocData(72131, "Bottom"),
-    "Coldkeep_cannon_heart": LocData(72132, "Menu"),
-    "Stonecastle_top_heart": LocData(72133, "Menu"),
-    "Farfall_5_balloons": LocData(72134, "Farfall"),
-    "Bonus_2": LocData(72135, "Firecage"),
-    "Deepdive_shaft_top_right": LocData(72136, "Deepdive"),
-    "Skysand_right_heart_door": LocData(72137, "Skysand"),
-    "Skysand_left_roof": LocData(72138, "Skysand"),
-    "Skysand_top": LocData(72139, "Skysand"),
-    "Skysand_top_heart_door": LocData(72140, "Skysand"),
-    "Cloudrun_left_under": LocData(72141, "Bottom"),
-    "Cloudrun_mid_save": LocData(72142, "Bottom"),
-    "Cloudrun_far_right": LocData(72143, "Bottom"),
-    "Deepdive_left": LocData(72144, "Deepdive"),
-    "Deepdive_shaft_top": LocData(72145, "Deepdive"),
-    "Nightwalk_shrine_heart": LocData(72146, "Menu"),
-    "Farfall_chest": LocData(72147, "Farfall"),
-    "Skysand_right_roof_chest": LocData(72148, "Skysand"),
-    "Deepdive_chest": LocData(72149, "Deepdive"),
-    "Nightclimb_chest": LocData(72150, "Nightclimb"),
-    "Deepdive_right_path": LocData(72151, "Deepdive"),
-    # "Skytown_astrocrash": LocData(72152, "Menu"), # Exclude?
-    "Grotto_eye_boss": LocData(72153, "Deepdive"),
-    "Darkgrotto_top_left": LocData(72154, "Darkgrotto"),
-    "Darkgrotto_mid_right": LocData(72155, "Darkgrotto"),
-    "Darkgrotto_boss_torch": LocData(72156, "Darkgrotto"),
-    "Highlands_platform": LocData(72157, "Mountside"),
-    "Nightwalk_upper_heart": LocData(72158, "Curtain"),
-    "Curtain_break": LocData(72159, "Curtain"),
-    "Nightwalk_chest": LocData(72160, "Curtain"),
-    "Curtain_kill_4": LocData(72161, "Curtain"),
-    # "Skytown_jumpbox": LocData(72162, "Menu"), # Exclude?
-    # "Skytown_keep_going": LocData(72163, "Menu"), # Exclude?
-    "Deepdive_exit_heart_mid": LocData(72164, "Deepdive2"),
-    "Deepdive_exit_heart_top": LocData(72165, "Deepdive2"),
-    "Icecastle_entrance": LocData(72166, "Curtain"),
-    "Icecastle_left_outside": LocData(72167, "Curtain"),
-    "Icecastle_entrance_heart_door": LocData(72168, "Curtain"),
-    "Icecastle_low_mid_heartdoor": LocData(72169, "Curtain"),
-    "Icecastle_high_mid_heartdoor": LocData(72170, "Curtain"),
-    "Icecastle_top_left_heart_door": LocData(72171, "Curtain"),
-    "Icecastle_top_right": LocData(72172, "Curtain"),
-    "10_flowers": LocData(72173, "Curtain"),
-    "20_flowers": LocData(72174, "Curtain"),
-    "Rainbowdive_second_prize": LocData(72175, "Curtain"),
-    "Rainbowdive_first_prize": LocData(72176, "Curtain"),
-    "Icecastle_bottom_underhang": LocData(72177, "Curtain"),
-    "Skylands_underhang": LocData(72178, "Curtain"),
-    "Skylands_chest": LocData(72179, "Curtain"),
-    "Skylands_duck": LocData(72180, "Curtain"),
-    "Skylands_balloon_chain": LocData(72181, "Curtain"),
-    "Skylands_portal": LocData(72182, "Mountside"),
-    "Library_heart": LocData(72183, "Curtain"),
-    "Deepdive_far_right": LocData(72184, "Deepdive2"),
-    "Deepdive_shaft_bot_right": LocData(72185, "Deepdive"),
-    "Blancland_top_left_kill": LocData(72186, "Blancland"),
-    "Blancland_bottom_left": LocData(72187, "Blancland"),
-    "Skylands_toll_gate": LocData(72188, "Curtain"),
-    "Icecastle_low_mid_secret": LocData(72189, "Curtain"),
-    "Blackcastle_top_mid": LocData(72190, "Blackcastle"),
-    "Strangecastle_heart_door": LocData(72191, "Strangecastle"),
-    "Skylands_heart_gate": LocData(72192, "Curtain"),
-    "Undertomb_right_heart_door": LocData(72193, "Longbeach"),
-    "Undertomb_left": LocData(72194, "Longbeach"),
-    "Undertomb_left_heart_door": LocData(72195, "Longbeach"),
-    "Skytown_shop_8": LocData(72201, "Menu"),
-    "Farfall_blue_rock_boss": LocData(72202, "Strangecastle"),
-    "Stonecastle_eye_boss": LocData(72203, "Menu"),
-    "Skysand_boss": LocData(72204, "Skysand"),
-    "Cloudrun_boss": LocData(72205, "Bottom"),
-    "Deepdive_boss": LocData(72206, "Deepdive2"),
-    "Darkgrotto_boss": LocData(72207, "Darkgrotto"),
-    "Curtain_boss": LocData(72208, "Curtain"),
-    "Icecastle_boss": LocData(72209, "Curtain"),
-    "Blancland_boss": LocData(72210, "Blancland"),
-    "Curtain_start_flower": LocData(72351, "Curtain"),
-    "Longbeach_water_entrance_flower": LocData(72352, "Menu"),
-    "Icecastle_entrance_flower": LocData(72353, "Curtain"),
-    "Blancland_entrance_flower": LocData(72354, "Blancland"),
-    "Stonecastle_flower": LocData(72355, "Menu"),
-    "Farfall_bottom_flower": LocData(72356, "Farfall"),
-    "Nightwalk_save_flower": LocData(72357, "Menu"),
-    "Blackcastle_end_flower": LocData(72358, "Blackcastle"),
-    "Nightclimb_flower": LocData(72359, "Nightclimb"),
-    "Deepdive_boss_flower": LocData(72360, "Deepdive2"),
-    "Bottom_flower": LocData(72361, "Bottom"),
-    "Mountside_left_flower": LocData(72362, "Mountside"),
-    "Library_flower": LocData(72363, "Curtain"),
-    "Darkgrotto_bot_right_flower": LocData(72364, "Darkgrotto"),
-    "Nightwalk_high_flower": LocData(72365, "Curtain"),
-    "Cloudrun_start_flower": LocData(72366, "Bottom"),
-    "Grotto_flower": LocData(72367, "Menu"),
-    "Skysand_left_outside": LocData(72368, "Skysand"),
-    "Skytown_flower": LocData(72369, "Menu"),
-    "Nightwalk_nest_flower": LocData(72370, "Curtain"),
-    "Grotto_boss_1": LocData(72401, "Menu"),
-    "Deeptower_boss_2": LocData(72402, "Menu"),
-    "Coldkeep_boss_3": LocData(72403, "Menu"),
-    "Nightclimb_boss_4": LocData(72404, "Nightclimb"),
-    "Stonecastle_boss_5": LocData(72405, "Menu"),
-    "Grotto_boss_6": LocData(72406, "Deepdive"),
-    "Firecage_boss_7": LocData(72407, "Firecage"),
-    "Farfall_boss_8": LocData(72408, "Strangecastle"),
-    "Stonecastle_boss_9": LocData(72409, "Menu"),
-    "Skysand_boss_10": LocData(72410, "Skysand"),
-    "Cloudrun_boss_11": LocData(72411, "Bottom"),
-    "Deepdive_boss_12": LocData(72412, "Deepdive2"),
-    "Darkgrotto_boss_13": LocData(72413, "Darkgrotto"),
-    "Curtain_boss_14": LocData(72414, "Curtain"),
-    "Icecastle_boss_15": LocData(72415, "Curtain"),
-    "Blancland_boss_16": LocData(72416, "Blancland"),
-    "Blackcastle_boss_17": LocData(72417, "Blackcastle"),
-    "5_flowers": LocData(72418, "Curtain"),
-    "15_flowers": LocData(72419, "Curtain"),
-    "Rainbowdive_300": LocData(72420, "Curtain"),
-    "Rainbowdive_100": LocData(72421, "Curtain"),
-    "Victory": LocData(None, "Blackcastle")
+
+# Sorting areas alphabetically since a vanilla order doesn't really exist in a comprehensive sense.
+# Locations within an area are sorted top-to-bottom, left-to-right.
+
+# Arcade locations are not added to the full location table below.
+# This is so they can be added with an option at some point in time.
+arcade_location_table = {
+    L_SKY_TOWN_ASTROCRASH: LocData(72152, R_START_REGION),  # Exclude?
+    L_SKY_TOWN_JUMPBOX: LocData(72162, R_START_REGION),  # Exclude?
+    L_SKY_TOWN_KEEPGOING: LocData(72163, R_START_REGION),  # Exclude?
+}
+
+blackcastle_location_table = {
+    L_BLACKCASTLE_BOSS: LocData(72417, A_BLACKCASTLE),
+    L_BLACKCASTLE_FLOWER: LocData(72358, A_BLACKCASTLE),
+    L_BLACKCASTLE_REDBLOCKS: LocData(72190, A_BLACKCASTLE),
+}
+
+blancland_location_table = {
+    L_BLANCLAND_FREEZE: LocData(72187, A_BLANCLAND),
+    L_BLANCLAND_KILL: LocData(72186, A_BLANCLAND),
+    L_BLANCLAND_POSTBOSS: LocData(72210, A_BLANCLAND),
+    L_BLANCLAND_BOSS: LocData(72416, A_BLANCLAND),
+    L_BLANCLAND_FLOWER: LocData(72354, A_BLANCLAND),
+}
+
+bonus_location_table = {
+    L_BONUS_1: LocData(72020, A_FIRECAGE),
+    L_BONUS_2: LocData(72135, A_FIRECAGE),
+}
+
+bottom_location_table = {
+    L_THE_BOTTOM_CLOUD: LocData(72131, A_THE_BOTTOM),
+    L_THE_BOTTOM_FLOWER: LocData(72361, A_THE_BOTTOM),
+}
+
+cloudrun_location_table = {
+    L_CLOUDRUN_FLOWER: LocData(72366, A_THE_BOTTOM),
+    L_CLOUDRUN_UNDER: LocData(72141, A_THE_BOTTOM),
+    L_CLOUDRUN_MIDDLE: LocData(72142, A_THE_BOTTOM),
+    L_CLOUDRUN_BOSS: LocData(72411, A_THE_BOTTOM),
+    L_CLOUDRUN_POSTBOSS: LocData(72205, A_THE_BOTTOM),
+    L_CLOUDRUN_FARRIGHT: LocData(72143, A_THE_BOTTOM),
+}
+
+coldkeep_location_table = {
+    L_COLDKEEP_CANNON: LocData(72132, R_START_REGION),
+    L_COLDKEEP_BOSS: LocData(72403, R_START_REGION),
+    L_COLDKEEP_POSTBOSS: LocData(72010, R_START_REGION),
+    L_COLDKEEP_UPPER: LocData(72002, R_START_REGION),
+    L_COLDKEEP_LOWER: LocData(72102, R_START_REGION),
+}
+
+the_curtain_location_table = {
+    L_THE_CURTAIN_FLOWER: LocData(72351, A_THE_CURTAIN),
+    L_THE_CURTAIN_KILL: LocData(72161, A_THE_CURTAIN),
+    L_THE_CURTAIN_BREAKABLE: LocData(72159, A_THE_CURTAIN),
+    L_THE_CURTAIN_BOSS: LocData(72414, A_THE_CURTAIN),
+    L_THE_CURTAIN_POSTBOSS: LocData(72208, A_THE_CURTAIN),
+}
+
+dark_grotto_location_table = {
+    L_DARK_GROTTO_UPPER: LocData(72154, A_DARK_GROTTO),
+    L_DARK_GROTTO_CAMPSITE: LocData(72155, A_DARK_GROTTO),
+    L_DARK_GROTTO_BOSS: LocData(72413, A_DARK_GROTTO),
+    L_DARK_GROTTO_POSTBOSS: LocData(72207, A_DARK_GROTTO),
+    L_DARK_GROTTO_TORCHES: LocData(72156, A_DARK_GROTTO),
+    L_DARK_GROTTO_FLOWER: LocData(72364, A_DARK_GROTTO),
+}
+
+deepdive_location_table = {
+    L_DEEPDIVE_LEFT: LocData(72144, A_DEEPDIVE),
+    L_DEEPDIVE_CHEST: LocData(72149, A_DEEPDIVE),
+    L_DEEPDIVE_LEFTCEILING: LocData(72019, A_DEEPDIVE),
+    L_DEEPDIVE_TOP: LocData(72145, A_DEEPDIVE),
+    L_DEEPDIVE_LEFTFISHNOOK: LocData(72018, A_DEEPDIVE),
+    L_DEEPDIVE_1FISHROOM: LocData(72136, A_DEEPDIVE),
+    L_DEEPDIVE_MIDDLEROOM: LocData(72021, A_DEEPDIVE),
+    L_DEEPDIVE_BOTTOM: LocData(72185, A_DEEPDIVE),
+    L_DEEPDIVE_CARGO: LocData(72151, A_DEEPDIVE),
+    L_DEEPDIVE_BOSS: LocData(72412, R_DEEPDIVE_RIGHT),
+    L_DEEPDIVE_INBLOCK: LocData(72165, R_DEEPDIVE_RIGHT),
+    L_DEEPDIVE_RIGHTFISHNOOK: LocData(72164, R_DEEPDIVE_RIGHT),
+    L_DEEPDIVE_FLOWER: LocData(72360, R_DEEPDIVE_RIGHT),
+    L_DEEPDIVE_POSTBOSS: LocData(72206, R_DEEPDIVE_RIGHT),
+    L_DEEPDIVE_SPIKEPATH: LocData(72184, R_DEEPDIVE_RIGHT),
+}
+
+deeptower_location_table = {
+    L_DEEPTOWER_DOOR: LocData(72022, A_THE_CURTAIN),
+    L_DEEPTOWER_BOSS: LocData(72402, R_START_REGION),
+    L_DEEPTOWER_POSTBOSS: LocData(72014, R_START_REGION),
+    L_DEEPTOWER_SPIKES: LocData(72101, R_START_REGION),
+}
+
+farfall_location_table = {
+    L_FARFALL_KILL: LocData(72118, A_FARFALL),
+    L_FARFALL_CHEST: LocData(72147, A_FARFALL),
+    L_FARFALL_5BALLOONS: LocData(72134, A_FARFALL),
+    L_FARFALL_SPECIALBALLOON: LocData(72130, A_THE_BOTTOM),
+    L_FARFALL_PITDOOR: LocData(72005, A_FARFALL),
+    L_FARFALL_FLOWER: LocData(72356, A_FARFALL),
+    L_FARFALL_PITEND: LocData(72122, A_FARFALL),
+    L_FARFALL_YELLOWDOOR: LocData(72121, A_FARFALL),
+    L_FARFALL_BOSS: LocData(72408, A_STRANGECASTLE),
+    L_FARFALL_POSTBOSS: LocData(72202, A_STRANGECASTLE),
+}
+
+final_climb_location_table = {
+    VICTORY: LocData(None, A_BLACKCASTLE)
+}
+
+firecage_location_table = {
+    L_FIRECAGE_TOLL: LocData(72008, A_FIRECAGE),
+    L_FIRECAGE_LEFTSAVE: LocData(72125, A_FIRECAGE),
+    L_FIRECAGE_CRUSHERS: LocData(72124, A_FIRECAGE),
+    L_FIRECAGE_UPPERDOOR: LocData(72123, A_FIRECAGE),
+    L_FIRECAGE_MIDDLE: LocData(72127, A_FIRECAGE),
+    L_FIRECAGE_LOWERDOOR: LocData(72128, A_FIRECAGE),
+    L_FIRECAGE_RIGHTSAVE: LocData(72129, A_FIRECAGE),
+    L_FIRECAGE_POSTBOSS: LocData(72016, A_FIRECAGE),
+    L_FIRECAGE_BOSS: LocData(72407, A_FIRECAGE),
+}
+
+grotto_location_table = {
+    L_GROTTO_POSTBOSS: LocData(72006, R_START_REGION),
+    L_GROTTO_BOSS: LocData(72401, R_START_REGION),
+    L_GROTTO_FLOWER: LocData(72367, R_START_REGION),
+    L_GROTTO_MURAL: LocData(72107, R_START_REGION),
+    L_GROTTO_POSTBOSS2: LocData(72153, A_DEEPDIVE),
+    L_GROTTO_BOSS2: LocData(72406, A_DEEPDIVE),
+}
+
+highlands_location_table = {
+    L_HIGHLANDS_PLATFORM: LocData(72157, A_MOUNTSIDE),
+}
+
+icecastle_location_table = {
+    L_ICECASTLE_LEFTOUTER: LocData(72167, A_THE_CURTAIN),
+    L_ICECASTLE_ENTRYDOOR: LocData(72168, A_THE_CURTAIN),
+    L_ICECASTLE_SPIKEFUNNEL: LocData(72166, A_THE_CURTAIN),
+    L_ICECASTLE_FLOWER: LocData(72353, A_THE_CURTAIN),
+    L_ICECASTLE_YELLOWDOOR: LocData(72171, A_THE_CURTAIN),
+    L_ICECASTLE_UNDERSIDE: LocData(72177, A_THE_CURTAIN),
+    L_ICECASTLE_TINYDOOR: LocData(72170, A_THE_CURTAIN),
+    L_ICECASTLE_CANNONDOOR: LocData(72169, A_THE_CURTAIN),
+    L_ICECASTLE_SPIKEFLOOR: LocData(72189, A_THE_CURTAIN),
+    L_ICECASTLE_POSTBOSS: LocData(72209, A_THE_CURTAIN),
+    L_ICECASTLE_BOSS: LocData(72415, A_THE_CURTAIN),
+    L_ICECASTLE_TOPRIGHT: LocData(72172, A_THE_CURTAIN),
+}
+
+library_location_table = {
+    L_LIBRARY_UPPER: LocData(72183, A_THE_CURTAIN),
+    L_LIBRARY_FLOWER: LocData(72363, A_THE_CURTAIN),
+}
+
+longbeach_location_table = {
+    L_LONGBEACH_FLOWER: LocData(72352, R_START_REGION),
+}
+
+mountside_location_table = {
+    L_MOUNTSIDE_FLOWER: LocData(72362, A_MOUNTSIDE),
+    L_MOUNTSIDE_DOOR: LocData(72023, A_MOUNTSIDE),
+}
+
+nightclimb_location_table = {
+    L_NIGHTCLIMB_BOSS: LocData(72404, A_NIGHTCLIMB),
+    L_NIGHTCLIMB_CANNONS: LocData(72106, A_NIGHTCLIMB),
+    L_NIGHTCLIMB_TOP: LocData(72009, A_NIGHTCLIMB),
+    L_NIGHTCLIMB_DUCK: LocData(72126, A_NIGHTCLIMB),
+    L_NIGHTCLIMB_UPPERSAVE: LocData(72108, A_NIGHTCLIMB),
+    L_NIGHTCLIMB_FLOWER: LocData(72359, A_NIGHTCLIMB),
+    L_NIGHTCLIMB_RIGHT: LocData(72105, A_NIGHTCLIMB),
+    L_NIGHTCLIMB_CHEST: LocData(72150, A_NIGHTCLIMB),
+}
+
+nightwalk_location_table = {
+    L_NIGHTWALK_UPPEREND: LocData(72158, A_THE_CURTAIN),
+    L_NIGHTWALK_NESTFLOWER: LocData(72370, A_THE_CURTAIN),
+    L_NIGHTWALK_LOWERFLOWER: LocData(72357, R_START_REGION),
+    L_NIGHTWALK_SKYRED: LocData(72117, R_START_REGION),
+    L_NIGHTWALK_FIRST: LocData(72001, R_START_REGION),
+    L_NIGHTWALK_BREAKABLE: LocData(72120, R_START_REGION),
+    L_NIGHTWALK_CHEST: LocData(72160, A_THE_CURTAIN),
+    L_NIGHTWALK_SKYTEMPLE: LocData(72017, R_START_REGION),
+    L_NIGHTWALK_GROUNDTEMPLE: LocData(72146, R_START_REGION),
+    L_NIGHTWALK_TORCHES: LocData(72103, R_START_REGION),
+    L_NIGHTWALK_UPPERFLOWER: LocData(72365, A_THE_CURTAIN),
+}
+
+rainbowdive_location_table = {
+    L_RAINBOWDIVE_4TH: LocData(72421, A_THE_CURTAIN),
+    L_RAINBOWDIVE_3RD: LocData(72420, A_THE_CURTAIN),
+    L_RAINBOWDIVE_2ND: LocData(72175, A_THE_CURTAIN),
+    L_RAINBOWDIVE_1ST: LocData(72176, A_THE_CURTAIN),
+}
+
+skylands_location_table = {
+    L_SKYLANDS_CHEST: LocData(72179, A_THE_CURTAIN),
+    L_SKYLANDS_TOLL: LocData(72188, A_THE_CURTAIN),
+    L_SKYLANDS_DUCK: LocData(72180, A_THE_CURTAIN),
+    L_SKYLANDS_BALLOONS: LocData(72181, A_THE_CURTAIN),
+    L_SKYLANDS_PORTAL: LocData(72182, A_MOUNTSIDE),
+    L_SKYLANDS_DOOR: LocData(72192, A_THE_CURTAIN),
+    L_SKYLANDS_TOPRIGHT: LocData(72178, A_THE_CURTAIN),
+}
+
+skysand_location_table = {
+    L_SKYSAND_LEFTSTATUE: LocData(72138, A_SKYSAND),
+    L_SKYSAND_FLOWER: LocData(72368, A_SKYSAND),
+    L_SKYSAND_BOTTOMSAVE: LocData(72011, A_SKYSAND),
+    L_SKYSAND_POSTBOSS: LocData(72204, A_SKYSAND),
+    L_SKYSAND_BOSS: LocData(72410, A_SKYSAND),
+    L_SKYSAND_UPPERDOOR: LocData(72140, A_SKYSAND),
+    L_SKYSAND_YELLOW: LocData(72139, A_SKYSAND),
+    L_SKYSAND_LOWERDOOR: LocData(72137, A_SKYSAND),
+    L_SKYSAND_CHEST: LocData(72148, A_SKYSAND),
+}
+
+sky_town_location_table = {
+    L_SKY_TOWN_YELLOW: LocData(72111, R_START_REGION),
+    L_SKY_TOWN_RED: LocData(72110, R_START_REGION),
+    L_SKY_TOWN_SHOP1: LocData(72112, R_START_REGION),
+    L_SKY_TOWN_SHOP2: LocData(72113, R_START_REGION),
+    L_SKY_TOWN_SHOP3: LocData(72114, R_START_REGION),
+    L_SKY_TOWN_SHOP4: LocData(72115, R_START_REGION),
+    L_SKY_TOWN_SHOP5: LocData(72116, R_START_REGION),
+    L_SKY_TOWN_SHOP6: LocData(72004, R_START_REGION),
+    L_SKY_TOWN_SHOP7: LocData(72015, R_START_REGION),
+    L_SKY_TOWN_SHOP8: LocData(72201, R_START_REGION),
+    L_SKY_TOWN_TOWER: LocData(72109, A_NIGHTCLIMB),
+    L_SKY_TOWN_FLOWER: LocData(72369, R_START_REGION),
+    L_SKY_TOWN_PITLEFT: LocData(72104, R_START_REGION),
+    # ST_PIT: LocData(72012, START_REGION),
+    L_SKY_TOWN_PITRIGHT: LocData(72007, R_START_REGION),
+}
+
+staircase_location_table = {
+    L_STAIRCASE_5FLOWERS: LocData(72418, A_THE_CURTAIN),
+    L_STAIRCASE_10FLOWERS: LocData(72173, A_THE_CURTAIN),
+    L_STAIRCASE_15FLOWERS: LocData(72419, A_THE_CURTAIN),
+    L_STAIRCASE_20FLOWERS: LocData(72174, A_THE_CURTAIN),
+}
+
+stonecastle_location_table = {
+    L_STONECASTLE_FLOWER: LocData(72355, R_START_REGION),
+    L_STONECASTLE_UPPER: LocData(72133, R_START_REGION),
+    L_STONECASTLE_DOOR: LocData(72003, R_START_REGION),
+    L_STONECASTLE_HIDDEN: LocData(72119, R_START_REGION),
+    L_STONECASTLE_BOSS: LocData(72405, R_START_REGION),
+    L_STONECASTLE_BOSS2: LocData(72409, R_START_REGION),
+    L_STONECASTLE_POSTBOSS: LocData(72013, R_START_REGION),
+    L_STONECASTLE_POSTBOSS2: LocData(72203, R_START_REGION),
+}
+
+strangecastle_location_table = {
+    L_STRANGECASTLE_END: LocData(72024, A_STRANGECASTLE),
+    L_STRANGECASTLE_DOOR: LocData(72191, A_STRANGECASTLE),
+}
+
+undertomb_location_table = {
+    L_UNDERTOMB_LEFT: LocData(72194, A_LONGBEACH),
+    L_UNDERTOMB_LEFTDOOR: LocData(72195, A_LONGBEACH),
+    L_UNDERTOMB_RIGHTDOOR: LocData(72193, A_LONGBEACH),
+}
+
+full_location_table = {
+    **blackcastle_location_table,
+    **blancland_location_table,
+    **bonus_location_table,
+    **bottom_location_table,
+    **cloudrun_location_table,
+    **coldkeep_location_table,
+    **the_curtain_location_table,
+    **dark_grotto_location_table,
+    **deepdive_location_table,
+    **deeptower_location_table,
+    **farfall_location_table,
+    **firecage_location_table,
+    **grotto_location_table,
+    **highlands_location_table,
+    **icecastle_location_table,
+    **library_location_table,
+    **longbeach_location_table,
+    **mountside_location_table,
+    **nightclimb_location_table,
+    **nightwalk_location_table,
+    **rainbowdive_location_table,
+    **skylands_location_table,
+    **skysand_location_table,
+    **sky_town_location_table,
+    **staircase_location_table,
+    **stonecastle_location_table,
+    **strangecastle_location_table,
+    **undertomb_location_table,
+
+    # Must go at the end for Reasons.
+    **final_climb_location_table,
 }

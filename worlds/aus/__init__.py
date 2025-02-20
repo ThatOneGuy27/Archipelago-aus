@@ -2,11 +2,12 @@ from .Regions import link_aus_areas, aus_regions
 from BaseClasses import Region, Entrance, Tutorial, Item
 from .Options import AUSOptions
 from .Items import item_table, AUSItem, item_pool
-from .Locations import location_table, AUSLocation
+from .Locations import full_location_table, AUSLocation
 from .Rules import AUSRules
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, Type
 from multiprocessing import Process
+from .Names import *
 
 class AnUntitledStoryWeb(WebWorld):
     tutorials = [
@@ -32,7 +33,7 @@ class AUSWorld(World):
     web = AnUntitledStoryWeb()
 
     item_name_to_id = {name: data.code for name, data in item_table.items()}
-    location_name_to_id = {name: data.id for name, data in location_table.items()}
+    location_name_to_id = {name: data.id for name, data in full_location_table.items()}
 
     def _get_aus_data(self):
         return {
@@ -47,9 +48,8 @@ class AUSWorld(World):
         pool = []
         for name, data in item_table.items():
             for amount in range(item_pool.get(name, 1)):
-                if name != "Victory":
+                if name != VICTORY:
                     item = AUSItem(name, data.classification, data.code, self.player)
-                    print(item, amount)
                     pool.append(item)
 
         self.multiworld.itempool += pool
@@ -58,7 +58,7 @@ class AUSWorld(World):
         def AUSRegion(region_name: str, exits=[]):
             ret = Region(region_name, self.player, self.multiworld)
             ret.locations += [AUSLocation(self.player, loc_name, loc_data.id, ret)
-                             for loc_name, loc_data in location_table.items()
+                             for loc_name, loc_data in full_location_table.items()
                              if loc_data.region == region_name]
             for exit in exits:
                 ret.exits.append(Entrance(self.player, exit, ret))
@@ -67,7 +67,7 @@ class AUSWorld(World):
         self.multiworld.regions += [AUSRegion(*r) for r in aus_regions]
         link_aus_areas(self.multiworld, self.player)
 
-        self.multiworld.get_location("Victory", self.player).place_locked_item(self.create_item("Victory"))
+        self.multiworld.get_location(VICTORY, self.player).place_locked_item(self.create_item(VICTORY))
 
     def create_item(self, name: str) -> Item:
         item_data = item_table[name]
@@ -78,4 +78,5 @@ class AUSWorld(World):
         AUSRules(self).set_aus_rules()
 
     def get_filler_item_name(self) -> str:
+        # I think this might crash? There's no item named this. -Bunne
         return "A cool rock"

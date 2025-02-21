@@ -3,6 +3,7 @@ from worlds.AutoWorld import LogicMixin
 from worlds.generic.Rules import CollectionRule, set_rule, add_rule, add_item_rule
 from BaseClasses import MultiWorld, CollectionState
 from . import Options
+from .Names import *
 
 if TYPE_CHECKING:
     from . import AUSWorld
@@ -23,156 +24,358 @@ class AUSRules:
         self.world = world
 
         self.region_rules = {
-            "Nightclimb": lambda state: self.jump_height_min(state, 5) and self.has_fire(state) and self.double_jump_min(state, 1),
-            "Deepdive": lambda state: self.jump_height(state) + (self.can_crouch(state) and self.has_red_energy(state)) * 2 >= 8 and 
-                                        self.hatched(state) and self.can_smash(state),
-            "Firecage": lambda state: self.can_stick(state) and self.has_red_energy(state) and self.can_shoot(state),
-            "Mountside": lambda state: self.jump_height(state) + self.can_crouch(state) * 2 >= 8 and
-                                         self.has_red_energy(state) and self.hatched(state),
-            "Curtain": lambda state: self.jump_height_min(state, 8) and self.can_slide(state) and 
-                                        state.has_all({"Red Energy", "Yellow Energy", "Hatch", "Ice Shot"}, self.player),
-            "Skysand": lambda state: self.single_jump_min(state, 2) and self.double_jump_min(state, 2) and self.can_slide(state) and
-                                        state.has_all({"Red Energy", "Progressive Fire Shot", "Ice Shot"}, self.player),
-            "Darkgrotto": lambda state: self.has_ice(state) and self.can_smash(state),
-            "Farfall": lambda state: self.jump_height_min(state, 4) and state.has_all({"Red Energy", "Smash", "Hatch"}, self.player),
-            "Strangecastle": lambda state: (self.jump_height(state) + self.can_stick(state)) >= 7,
-            "Bottom": lambda state: self.jump_height_min(state, 6.5) and self.can_slide(state),
-            "Blancland": lambda state: self.jump_height_min(state, 8) and state.has("Extra Air Capacity", self.player),
-            "Deepdive2": lambda state: self.jump_height_min(state, 7) and (self.single_jump_min(state, 3) or self.can_slide(state)),
-            "Blackcastle": lambda state: state.has("Gold Orb", self.player, self.ORB_COUNT) and self.single_jump_min(state, 3) and
-                                            self.double_jump_min(state, 2) and self.can_smash(state) and self.can_slide(state),
+            A_NIGHTCLIMB: lambda state: self.jump_height_min(state, 5) and self.has_fire(state) and self.double_jump_min(state, 1),
+            A_DEEPDIVE: lambda state: self.jump_height(state) + (self.can_duck(state) and self.has_red_energy(state)) * 2 >= 8 and
+                                      self.hatched(state) and self.can_divebomb(state),
+            A_FIRECAGE: lambda state: self.can_stick(state) and self.has_red_energy(state) and self.can_shoot(state),
+            A_MOUNTSIDE: lambda state: self.jump_height(state) + self.can_duck(state) * 2 >= 8 and
+                                       self.has_red_energy(state) and self.hatched(state),
+            A_THE_CURTAIN: lambda state: self.jump_height_min(state, 8) and self.can_slide(state) and
+                                         state.has_all({I_RED_ENERGY, I_YELLOW_ENERGY, I_HATCH, I_SHOOT_ICE}, self.player),
+            A_SKYSAND: lambda state: self.single_jump_min(state, 2) and self.double_jump_min(state, 2) and self.can_slide(state) and
+                                     state.has_all({I_RED_ENERGY, I_SHOOT_FIRE, I_SHOOT_ICE}, self.player),
+            A_DARK_GROTTO: lambda state: self.has_ice(state) and self.can_divebomb(state),
+            A_FARFALL: lambda state: self.jump_height_min(state, 4) and state.has_all({I_RED_ENERGY, I_DIVE_BOMB, I_HATCH}, self.player),
+            A_STRANGECASTLE: lambda state: (self.jump_height(state) + self.can_stick(state)) >= 7,
+            A_THE_BOTTOM: lambda state: self.jump_height_min(state, 6.5) and self.can_slide(state),
+            A_BLANCLAND: lambda state: self.jump_height_min(state, 8) and state.has(I_AIR_UPGRADE, self.player),
+            R_DEEPDIVE_RIGHT: lambda state: self.jump_height_min(state, 7) and (self.single_jump_min(state, 3) or self.can_slide(state)),
+            A_BLACKCASTLE: lambda state: state.has(I_GOLD_ORB, self.player, self.ORB_COUNT) and self.single_jump_min(state, 3) and
+                                         self.double_jump_min(state, 2) and self.can_divebomb(state) and self.can_slide(state),
+        }
+
+        arcade_location_rules = {
+            L_SKY_TOWN_ASTROCRASH: true,
+            L_SKY_TOWN_JUMPBOX: true,
+            L_SKY_TOWN_KEEPGOING: true,
+        }
+
+        blackcastle_location_rules = {
+            L_BLACKCASTLE_BOSS: true,
+            L_BLACKCASTLE_FLOWER: lambda state: self.has_fire(state),
+            L_BLACKCASTLE_REDBLOCKS: lambda state: self.can_shoot(state),
+        }
+
+        blancland_location_rules = {
+            L_BLANCLAND_FREEZE: lambda state: self.has_red_energy(state) and self.has_ice(state),
+            L_BLANCLAND_KILL: lambda state: self.has_red_energy(state) and self.has_fire(state) and self.can_slide(state),
+            L_BLANCLAND_POSTBOSS: lambda state: self.has_red_energy(state) and self.has_fire(state),
+            L_BLANCLAND_BOSS: lambda state: self.has_red_energy(state) and self.has_fire(state),
+            L_BLANCLAND_FLOWER: true
+        }
+
+        bonus_location_rules = {
+            L_BONUS_1: true,
+            L_BONUS_2: true,
+        }
+
+        bottom_location_rules = {
+            L_THE_BOTTOM_CLOUD: true,
+            L_THE_BOTTOM_FLOWER: true,
+        }
+
+        cloudrun_location_rules = {
+            L_CLOUDRUN_FLOWER: true,
+            L_CLOUDRUN_UNDER: lambda state: self.jump_height_min(state, 7),
+            L_CLOUDRUN_MIDDLE: lambda state: self.jump_height_min(state, 7) and self.has_fire(state),
+            L_CLOUDRUN_BOSS: lambda state: self.jump_height_min(state, 7) and self.has_fire(state) and self.has_ice(
+                state),
+            L_CLOUDRUN_POSTBOSS: lambda state: self.jump_height_min(state, 7) and self.has_fire(state) and self.has_ice(
+                state),
+            L_CLOUDRUN_FARRIGHT: lambda state: self.jump_height_min(state, 7) and self.has_fire(
+                state) and self.has_ice(state),
+        }
+
+        coldkeep_location_rules = {
+            L_COLDKEEP_CANNON: lambda state: self.jump_height_min(state, 5) and self.has_ice(state),
+            L_COLDKEEP_BOSS: lambda state: self.jump_height_min(state, 5),
+            L_COLDKEEP_POSTBOSS: lambda state: self.jump_height_min(state, 5),
+            L_COLDKEEP_UPPER: lambda state: self.jump_height_min(state, 4),
+            L_COLDKEEP_LOWER: lambda state: self.jump_height_min(state, 4),
+        }
+
+        the_curtain_location_rules = {
+            L_THE_CURTAIN_FLOWER: lambda state: self.has_yellow_energy(state) and (self.double_jump_min(state, 3) or (
+                        self.can_slide(state) and self.double_jump_min(state, 2))) and self.has_ice(state),
+            L_THE_CURTAIN_KILL: true,
+            L_THE_CURTAIN_BREAKABLE: lambda state: self.can_divebomb(state),
+            L_THE_CURTAIN_BOSS: true,
+            L_THE_CURTAIN_POSTBOSS: true,
+        }
+
+        dark_grotto_location_rules = {
+            L_DARK_GROTTO_UPPER: lambda state: self.has_yellow_energy(state) and self.jump_height_min(state, 7),
+            L_DARK_GROTTO_CAMPSITE: true,
+            L_DARK_GROTTO_BOSS: true,
+            L_DARK_GROTTO_POSTBOSS: true,
+            L_DARK_GROTTO_TORCHES: lambda state: self.can_light_torches(state),
+            L_DARK_GROTTO_FLOWER: true,
+        }
+
+        deepdive_location_rules = {
+            L_DEEPDIVE_LEFT: lambda state: self.double_jump_min(state, 3),
+            L_DEEPDIVE_CHEST: lambda state: self.double_jump_min(state, 3),
+            L_DEEPDIVE_LEFTCEILING: lambda state: self.double_jump_min(state, 3),
+            L_DEEPDIVE_TOP: true,
+            L_DEEPDIVE_LEFTFISHNOOK: lambda state: (self.has_ice(state) or self.jump_height_min(state, 8)),
+            L_DEEPDIVE_1FISHROOM: lambda state: self.has_ice(state) and self.jump_height_min(state,
+                                                                                             6.5) and state.has(
+                I_AIR_UPGRADE, self.player),
+            L_DEEPDIVE_MIDDLEROOM: true,
+            L_DEEPDIVE_BOTTOM: lambda state: self.jump_height_min(state, 8) and state.has(I_AIR_UPGRADE,
+                                                                                          self.player, 2),
+            L_DEEPDIVE_CARGO: lambda state: self.jump_height_min(state, 7),
+            L_DEEPDIVE_BOSS: true,
+            L_DEEPDIVE_INBLOCK: true,
+            L_DEEPDIVE_RIGHTFISHNOOK: lambda state: self.has_ice(state),
+            L_DEEPDIVE_FLOWER: true,
+            L_DEEPDIVE_POSTBOSS: true,
+            L_DEEPDIVE_SPIKEPATH: true,
+        }
+
+        deeptower_location_rules = {
+            L_DEEPTOWER_DOOR: true,
+            L_DEEPTOWER_BOSS: lambda state: self.jump_height_min(state, 4),
+            L_DEEPTOWER_POSTBOSS: lambda state: self.jump_height_min(state, 4),
+            L_DEEPTOWER_SPIKES: lambda state: self.jump_height_min(state, 4) and (
+                        self.double_jump_height(state) + self.can_slide(state)),
+        }
+
+        farfall_location_rules = {
+            L_FARFALL_KILL: lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state, 1),
+            L_FARFALL_CHEST: lambda state: self.jump_height_min(state, 4),
+            L_FARFALL_5BALLOONS: lambda state: self.jump_height_min(state, 7),
+            L_FARFALL_SPECIALBALLOON: true,
+            L_FARFALL_PITDOOR: lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state,
+                                                                                                     1) and self.can_divebomb(
+                state) and self.has_red_energy(state),
+            L_FARFALL_FLOWER: lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state,
+                                                                                                    1) and self.can_divebomb(
+                state) and self.has_red_energy(state),
+            L_FARFALL_PITEND: lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state,
+                                                                                                    1) and self.can_divebomb(
+                state) and self.has_red_energy(state),
+            L_FARFALL_YELLOWDOOR: lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state,
+                                                                                                        1) and self.can_divebomb(
+                state) and self.has_red_energy(state) and self.has_yellow_energy(state),
+            L_FARFALL_BOSS: true,
+            L_FARFALL_POSTBOSS: true,
+        }
+
+        final_climb_location_rules = {
+            VICTORY: true
+        }
+
+        firecage_location_rules = {
+            L_FIRECAGE_TOLL: lambda state: (self.can_slide(state) or self.has_fire(state)),
+            L_FIRECAGE_LEFTSAVE: true,
+            L_FIRECAGE_CRUSHERS: lambda state: self.has_fire(state),
+            L_FIRECAGE_UPPERDOOR: true,
+            L_FIRECAGE_MIDDLE: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
+            L_FIRECAGE_LOWERDOOR: lambda state: self.jump_height_min(state, 8) and self.has_yellow_energy(state),
+            L_FIRECAGE_RIGHTSAVE: lambda state: self.jump_height_min(state, 6.5) and self.can_slide(
+                state) and self.has_yellow_energy(state),
+            L_FIRECAGE_POSTBOSS: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
+            L_FIRECAGE_BOSS: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
+        }
+
+        grotto_location_rules = {
+            L_GROTTO_POSTBOSS: lambda state: self.jump_height_min(state, 3.5),
+            L_GROTTO_BOSS: lambda state: self.jump_height_min(state, 3.5),
+            L_GROTTO_FLOWER: lambda state: (self.jump_height(state) + (
+                    self.can_duck(state) and self.has_red_energy(state)) * 2 >= 8) and self.hatched(state),
+            L_GROTTO_MURAL: lambda state: self.jump_height_min(state, 4) and (
+                        self.double_jump_height(state) + (self.can_stick(state)) >= 2),
+            L_GROTTO_POSTBOSS2: true,
+            L_GROTTO_BOSS2: true,
+        }
+
+        highlands_location_rules = {
+            L_HIGHLANDS_PLATFORM: lambda state: self.has_yellow_energy(state) and (self.double_jump_min(state, 3) or (
+                        self.double_jump_min(state, 2) and self.can_slide(state))) and self.has_ice(state),
+        }
+
+        icecastle_location_rules = {
+            L_ICECASTLE_LEFTOUTER: true,
+            L_ICECASTLE_ENTRYDOOR: true,
+            L_ICECASTLE_SPIKEFUNNEL: true,
+            L_ICECASTLE_FLOWER: true,
+            L_ICECASTLE_YELLOWDOOR: true,
+            L_ICECASTLE_UNDERSIDE: lambda state: self.can_divebomb(state),
+            L_ICECASTLE_TINYDOOR: true,
+            L_ICECASTLE_CANNONDOOR: true,
+            L_ICECASTLE_SPIKEFLOOR: true,
+            L_ICECASTLE_POSTBOSS: lambda state: self.can_divebomb(state),
+            L_ICECASTLE_BOSS: lambda state: self.can_divebomb(state),
+            L_ICECASTLE_TOPRIGHT: true,
+        }
+
+        library_location_rules = {
+            L_LIBRARY_UPPER: true,
+            L_LIBRARY_FLOWER: true,
+        }
+
+        longbeach_location_rules = {
+            L_LONGBEACH_FLOWER: lambda state: (state.can_reach(R_DEEPDIVE_RIGHT, "Region",
+                                                               self.player) or state.can_reach(
+                A_DARK_GROTTO, "Region", self.player)) and self.double_jump_min(state, 3) and self.can_slide(state),
+        }
+
+        mountside_location_rules = {
+            L_MOUNTSIDE_FLOWER: lambda state: self.double_jump_min(state, 3),
+            L_MOUNTSIDE_DOOR: true,
+        }
+
+        nightclimb_location_rules = {
+            L_NIGHTCLIMB_BOSS: true,
+            L_NIGHTCLIMB_CANNONS: true,
+            L_NIGHTCLIMB_TOP: true,
+            L_NIGHTCLIMB_DUCK: lambda state: self.can_duck(state) and self.hatched(state),
+            L_NIGHTCLIMB_UPPERSAVE: true,
+            L_NIGHTCLIMB_FLOWER: true,
+            L_NIGHTCLIMB_RIGHT: lambda state: self.jump_height_min(state, 5) and self.has_fire(state),
+            L_NIGHTCLIMB_CHEST: lambda state: self.jump_height_min(state, 5) and self.has_fire(state),
+        }
+
+        nightwalk_location_rules = {
+            L_NIGHTWALK_UPPEREND: true,
+            L_NIGHTWALK_NESTFLOWER: true,
+            L_NIGHTWALK_LOWERFLOWER: lambda state: self.jump_height_min(state, 5),
+            L_NIGHTWALK_SKYRED: lambda state: (self.can_duck(state) and self.jump_height_min(state, 6) and (
+                        self.double_jump_min(state, 2) or self.can_slide(state))) or state.can_reach(A_THE_CURTAIN,
+                                                                                                     "Region",
+                                                                                                     self.player),
+            L_NIGHTWALK_FIRST: true,
+            L_NIGHTWALK_BREAKABLE: lambda state: self.can_divebomb(state) and (
+                        self.jump_height_min(state, 2) or self.double_jump_min(state, 1)),
+            L_NIGHTWALK_CHEST: true,
+            L_NIGHTWALK_SKYTEMPLE: lambda state: (self.can_duck(state) and self.jump_height_min(state,
+                                                                                                6) and self.double_jump_min(
+                state, 1)) or state.can_reach(A_THE_CURTAIN, "Region", self.player),
+            L_NIGHTWALK_GROUNDTEMPLE: lambda state: self.jump_height_min(state, 2.5),
+            L_NIGHTWALK_TORCHES: lambda state: self.jump_height_min(state, 2.5) and self.can_light_torches(
+                state),
+            L_NIGHTWALK_UPPERFLOWER: true,
+        }
+
+        rainbowdive_location_rules = {
+            L_RAINBOWDIVE_4TH: true,
+            L_RAINBOWDIVE_3RD: true,
+            L_RAINBOWDIVE_2ND: true,
+            L_RAINBOWDIVE_1ST: true,
+        }
+
+        skylands_location_rules = {
+            L_SKYLANDS_CHEST: true,
+            L_SKYLANDS_TOLL: true,
+            L_SKYLANDS_DUCK: lambda state: self.can_divebomb(state) and self.can_duck(state),
+            L_SKYLANDS_BALLOONS: lambda state: self.can_divebomb(state),
+            L_SKYLANDS_PORTAL: true,
+            L_SKYLANDS_DOOR: lambda state: self.can_divebomb(state),
+            L_SKYLANDS_TOPRIGHT: lambda state: self.can_divebomb(state),
+        }
+
+        skysand_location_rules = {
+            L_SKYSAND_LEFTSTATUE: true,
+            L_SKYSAND_FLOWER: true,
+            L_SKYSAND_BOTTOMSAVE: lambda state: self.has_ice(state) and (
+                        self.has_red_energy(state) or self.jump_height_min(state, 8)) and self.can_stick(state),
+            L_SKYSAND_POSTBOSS: lambda state: self.has_yellow_energy(state) and self.double_jump_min(state, 3),
+            L_SKYSAND_BOSS: true,
+            L_SKYSAND_UPPERDOOR: true,
+            L_SKYSAND_YELLOW: true,
+            L_SKYSAND_LOWERDOOR: true,
+            L_SKYSAND_CHEST: true,
+        }
+
+        sky_town_location_rules = {
+            L_SKY_TOWN_YELLOW: lambda state: self.jump_height_min(state, 4) and self.has_yellow_energy(state),
+            L_SKY_TOWN_RED: lambda state: (self.jump_height_min(state, 4) and self.has_red_energy(state)) or (
+                    state.can_reach(A_NIGHTCLIMB, "Region", self.player) and self.has_ice(state)),
+            L_SKY_TOWN_SHOP1: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 100),
+            L_SKY_TOWN_SHOP2: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 100),
+            L_SKY_TOWN_SHOP3: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 100),
+            L_SKY_TOWN_SHOP4: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
+            L_SKY_TOWN_SHOP5: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
+            L_SKY_TOWN_SHOP6: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
+            L_SKY_TOWN_SHOP7: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
+            L_SKY_TOWN_SHOP8: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 1000),
+            L_SKY_TOWN_TOWER: true,
+            L_SKY_TOWN_FLOWER: lambda state: self.jump_height_min(state, 4),
+            L_SKY_TOWN_PITLEFT: lambda state: self.jump_height_min(state, 5) and self.has_fire(state),
+            # ST_PIT: lambda state: self.jump_height_min(state, 4),
+            L_SKY_TOWN_PITRIGHT: lambda state: (self.jump_height_min(state, 3) and self.can_slide(
+                state)) or self.double_jump_min(state, 2),
+        }
+
+        staircase_location_rules = {
+            L_STAIRCASE_5FLOWERS: lambda state: state.has(I_FLOWER, self.player, 5),
+            L_STAIRCASE_10FLOWERS: lambda state: state.has(I_FLOWER, self.player, 10),
+            L_STAIRCASE_15FLOWERS: lambda state: state.has(I_FLOWER, self.player, 15),
+            L_STAIRCASE_20FLOWERS: lambda state: state.has(I_FLOWER, self.player, 20),
+        }
+
+        stonecastle_location_rules = {
+            L_STONECASTLE_FLOWER: lambda state: self.jump_height_min(state, 5),
+            L_STONECASTLE_UPPER: lambda state: self.jump_height_min(state, 8) and self.has_red_energy(
+                state) and self.has_yellow_energy(state),
+            L_STONECASTLE_DOOR: lambda state: self.jump_height_min(state, 4),
+            L_STONECASTLE_HIDDEN: lambda state: self.jump_height_min(state, 4),
+            L_STONECASTLE_BOSS: lambda state: ((self.jump_height_min(state, 4) and self.double_jump_min(state,
+                                                                                                        1)) or self.jump_height_min(
+                state, 5)) and self.has_red_energy(state),
+            L_STONECASTLE_BOSS2: lambda state: self.jump_height_min(state, 8) and self.has_red_energy(
+                state) and self.has_yellow_energy(state) and self.can_slide(state) and self.can_divebomb(state),
+            L_STONECASTLE_POSTBOSS: lambda state: ((self.jump_height_min(state, 4) and self.double_jump_min(state,
+                                                                                                            1)) or self.jump_height_min(
+                state, 5)) and self.can_divebomb(state) and self.has_red_energy(state),
+            L_STONECASTLE_POSTBOSS2: lambda state: self.jump_height_min(state, 8) and self.has_red_energy(
+                state) and self.has_yellow_energy(state) and self.can_slide(state) and self.can_divebomb(state),
+        }
+
+        strangecastle_location_rules = {
+            L_STRANGECASTLE_END: lambda state: self.jump_height_min(state, 2) and self.has_range(state),
+            L_STRANGECASTLE_DOOR: lambda state: self.jump_height_min(state, 2) and self.has_range(state),
+        }
+
+        undertomb_location_rules = {
+            L_UNDERTOMB_LEFT: lambda state: self.can_divebomb(state),
+            L_UNDERTOMB_LEFTDOOR: lambda state: self.can_divebomb(state),
+            L_UNDERTOMB_RIGHTDOOR: lambda state: self.can_divebomb(state),
         }
 
         self.location_rules = {
-            # nightwalk
-            "Nightwalk_save_flower": lambda state: self.jump_height_min(state, 5),
-            "Nightwalk_sky_heart": lambda state: (self.can_crouch(state) and self.jump_height_min(state, 6) and (self.double_jump_min(state, 2) or self.can_slide(state))) or state.can_reach("Curtain", "Region", self.player),
-            "Nightwalk_block_heart": lambda state: self.can_smash(state) and (self.jump_height_min(state, 2) or self.double_jump_min(state, 1)),
-            "Nightwalk_hatch": lambda state: (self.can_crouch(state) and self.jump_height_min(state, 6) and self.double_jump_min(state, 1)) or state.can_reach("Curtain", "Region", self.player),
-            "Nightwalk_shrine_heart": lambda state: self.jump_height_min(state, 2.5),
-            "Nightwalk_shrine_torches": lambda state: self.jump_height_min(state, 2.5) and self.can_light_torches(state),
-            # nightclimb
-            "Nightclimb_duck_heart": lambda state: self.can_crouch(state) and self.hatched(state),
-            "Nightclimb_right_heart": lambda state: self.jump_height_min(state, 5) and self.has_fire(state),
-            "Nightclimb_chest": lambda state: self.jump_height_min(state, 5) and self.has_fire(state),
-            # grotto
-            "Grotto_djump": lambda state: self.jump_height_min(state, 3.5),
-            "Grotto_boss_1": lambda state: self.jump_height_min(state, 3.5),
-            "Grotto_flower": lambda state: (self.jump_height(state)+(self.can_crouch(state) and self.has_red_energy(state))*2 >= 8) and self.hatched(state),
-            "Grotto_mural_heart": lambda state: self.jump_height_min(state, 4) and (self.double_jump_height(state)+(self.can_stick(state))>=2),
-            # deeptower
-            "Deeptower_cannon_boss": lambda state: self.jump_height_min(state, 4),
-            "Deeptower_boss_2": lambda state: self.jump_height_min(state, 4),
-            "Deeptower_heart": lambda state: self.jump_height_min(state, 4) and (self.double_jump_height(state)+self.can_slide(state)),
-            # coldkeep
-            "Coldkeep_cannon_heart": lambda state: self.jump_height_min(state, 5) and self.has_ice(state),
-            "Coldkeep_boss": lambda state: self.jump_height_min(state, 5),
-            "Coldkeep_boss_3": lambda state: self.jump_height_min(state, 5),
-            "Coldkeep_high_branch": lambda state: self.jump_height_min(state, 4),
-            "Coldkeep_low_branch": lambda state: self.jump_height_min(state, 4),
-            # skytown
-            "Skytown_yellow_heart": lambda state: self.jump_height_min(state, 4) and self.has_yellow_energy(state),
-            "Skytown_red_heart": lambda state: (self.jump_height_min(state, 4) and self.has_red_energy(state)) or (state.can_reach("Nightclimb", "Region", self.player) and self.has_ice(state)),
-            "Skytown_shop_1": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 100),
-            "Skytown_shop_2": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 100),
-            "Skytown_shop_3": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 100),
-            "Skytown_shop_4": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
-            "Skytown_shop_5": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
-            "Skytown_shop_6": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
-            "Skytown_shop_7": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 500),
-            "Skytown_shop_8": lambda state: self.jump_height_min(state, 4) and self.total_money(state, 1000),
-            # "Skytown_astrocrash": lambda state: False,
-            # "Skytown_jumpbox": lambda state: False,
-            # "Skytown_keep_going": lambda state: False,
-            "Skytown_flower": lambda state: self.jump_height_min(state, 4),
-            "Skytown_pit_left": lambda state: self.jump_height_min(state, 5) and self.has_fire(state),
-            "Skytown_tp": lambda state: self.jump_height_min(state, 4),
-            "Skytown_pit_right": lambda state: (self.jump_height_min(state, 3) and self.can_slide(state)) or self.double_jump_min(state, 2),
-            # farfall
-            "Farfall_kill_3": lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state, 1),
-            "Farfall_chest": lambda state: self.jump_height_min(state, 4),
-            "Farfall_5_balloons": lambda state: self.jump_height_min(state, 7),
-            "Farfall_bottom_heart_door": lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state, 1) and self.can_smash(state) and self.has_red_energy(state),
-            "Farfall_bottom_heart": lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state, 1) and self.can_smash(state) and self.has_red_energy(state),
-            "Farfall_bottom_flower": lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state, 1) and self.can_smash(state) and self.has_red_energy(state),
-            "Farfall_yellow_heart_door": lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state, 1) and self.can_smash(state) and self.has_red_energy(state) and self.has_yellow_energy(state),
-            # stonecastle
-            "Stonecastle_flower": lambda state: self.jump_height_min(state, 5),
-            "Stonecastle_top_heart": lambda state: self.jump_height_min(state, 8) and self.has_red_energy(state) and self.has_yellow_energy(state),
-            "Stonecastle_heart_door": lambda state: self.jump_height_min(state, 4),
-            "Stonecastle_hidden_heart": lambda state: self.jump_height_min(state, 4),
-            "Stonecastle_rock_boss": lambda state: ((self.jump_height_min(state, 4) and self.double_jump_min(state, 1)) or self.jump_height_min(state, 5)) and self.can_smash(state) and self.has_red_energy(state),
-            "Stonecastle_boss_5": lambda state: ((self.jump_height_min(state, 4) and self.double_jump_min(state, 1)) or self.jump_height_min(state, 5)) and self.has_red_energy(state),
-            "Stonecastle_eye_boss": lambda state: self.jump_height_min(state, 8) and self.has_red_energy(state) and self.has_yellow_energy(state) and self.can_slide(state) and self.can_smash(state),
-            "Stonecastle_boss_9": lambda state: self.jump_height_min(state, 8) and self.has_red_energy(state) and self.has_yellow_energy(state) and self.can_slide(state) and self.can_smash(state),
-            # deepdive
-            "Deepdive_left_ceiling": lambda state: self.double_jump_min(state, 3),
-            "Deepdive_left": lambda state: self.double_jump_min(state, 3),
-            "Deepdive_chest": lambda state: self.double_jump_min(state, 3),
-            "Deepdive_shaft": lambda state: (self.has_ice(state) or self.jump_height_min(state, 8)),
-            "Deepdive_shaft_top_right": lambda state: self.has_ice(state) and self.jump_height_min(state, 6.5) and state.has("Extra Air Capacity", self.player),
-            "Deepdive_shaft_bot_right": lambda state: self.jump_height_min(state, 8) and state.has("Extra Air Capacity", self.player, 2),
-            "Deepdive_right_path": lambda state: self.jump_height_min(state, 7),
-            "Deepdive_exit_heart_mid": lambda state: self.has_ice(state),
-            # firecage
-            "Firecage_top_left_gate": lambda state: (self.can_slide(state) or self.has_fire(state)),
-            "Firecage_top": lambda state: self.has_fire(state),
-            "Firecage_mid": lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
-            "Firecage_mid_heart_door": lambda state: self.jump_height_min(state, 8) and self.has_yellow_energy(state),
-            "Firecage_bot": lambda state: self.jump_height_min(state, 6.5) and self.can_slide(state) and self.has_yellow_energy(state),
-            "Firecage_boss": lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
-            "Firecage_boss_7": lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
-            # skysand
-            "Skysand_bot_left": lambda state: self.has_ice(state) and (self.has_red_energy(state) or self.jump_height_min(state, 8)) and self.can_stick(state),
-            "Skysand_top": lambda state: self.has_yellow_energy(state) and self.double_jump_min(state, 3),
-            # cloudrun
-            "Cloudrun_left_under": lambda state: self.jump_height_min(state, 7),
-            "Cloudrun_mid_save": lambda state: self.jump_height_min(state, 7) and self.has_fire(state),
-            "Cloudrun_boss": lambda state: self.jump_height_min(state, 7) and self.has_fire(state) and self.has_ice(state),
-            "Cloudrun_boss_11": lambda state: self.jump_height_min(state, 7) and self.has_fire(state) and self.has_ice(state),
-            "Cloudrun_far_right": lambda state: self.jump_height_min(state, 7) and self.has_fire(state) and self.has_ice(state),
-            # highlands
-            "Highlands_platform": lambda state: self.has_yellow_energy(state) and (self.double_jump_min(state, 3) or (self.double_jump_min(state, 2) and self.can_slide(state))) and self.has_ice(state),
-            # darkgrotto
-            "Darkgrotto_top_left": lambda state: self.has_yellow_energy(state) and self.jump_height_min(state, 7),
-            "Darkgrotto_boss_torch": lambda state: self.can_light_torches(state),
-            # the curtain
-            "Curtain_start_flower": lambda state: self.has_yellow_energy(state) and (self.double_jump_min(state, 3) or (self.can_slide(state) and self.double_jump_min(state, 2))) and self.has_ice(state),
-            "Curtain_break": lambda state: self.can_smash(state),
-            # longbeach
-            "Longbeach_water_entrance_flower": lambda state: (state.can_reach("Deepdive2", "Region", self.player) or state.can_reach("Darkgrotto", "Region", self.player)) and self.double_jump_min(state, 3) and self.can_slide(state),
-            # icecastle
-            "Icecastle_bottom_underhang": lambda state: self.can_smash(state),
-            "Icecastle_boss": lambda state: self.can_smash(state),
-            "Icecastle_boss_15": lambda state: self.can_smash(state),
-            # blackcastle
-            "Blackcastle_end_flower": lambda state: self.has_fire(state),
-            "Blackcastle_top_mid": lambda state: self.can_shoot(state),
-            "Victory": lambda state: True,
-            # staircase
-            "5_flowers": lambda state: state.has("Secret Flower", self.player, 5),
-            "10_flowers": lambda state: state.has("Secret Flower", self.player, 10),
-            "15_flowers": lambda state: state.has("Secret Flower", self.player, 15),
-            "20_flowers": lambda state: state.has("Secret Flower", self.player, 20),
-            # skylands
-            "Skylands_underhang": lambda state: self.can_smash(state),
-            "Skylands_duck": lambda state: self.can_smash(state) and self.can_crouch(state),
-            "Skylands_balloon_chain": lambda state: self.can_smash(state),
-            "Skylands_heart_gate": lambda state: self.can_smash(state),
-            # blancland
-            "Blancland_bottom_left": lambda state: self.has_red_energy(state) and self.has_ice(state),
-            "Blancland_top_left_kill": lambda state: self.has_red_energy(state) and self.has_fire(state) and self.can_slide(state),
-            "Blancland_boss": lambda state: self.has_red_energy(state) and self.has_fire(state),
-            "Blancland_boss_16": lambda state: self.has_red_energy(state) and self.has_fire(state),
-            # mountside
-            "Mountside_left_flower": lambda state: self.double_jump_min(state, 3),
-            # strangecastle
-            "Strangecastle": lambda state: self.jump_height_min(state, 2) and self.has_range(state),
-            "Strangecastle_heart_door": lambda state: self.jump_height_min(state, 2) and self.has_range(state),
-            # undertomb
-            "Undertomb_right_heart_door": lambda state: self.can_smash(state),
-            "Undertomb_left": lambda state: self.can_smash(state),
-            "Undertomb_left_heart_door": lambda state: self.can_smash(state),
+            **blackcastle_location_rules,
+            **blancland_location_rules,
+            **bonus_location_rules,
+            **bottom_location_rules,
+            **cloudrun_location_rules,
+            **coldkeep_location_rules,
+            **the_curtain_location_rules,
+            **dark_grotto_location_rules,
+            **deepdive_location_rules,
+            **deeptower_location_rules,
+            **farfall_location_rules,
+            **firecage_location_rules,
+            **grotto_location_rules,
+            **highlands_location_rules,
+            **icecastle_location_rules,
+            **library_location_rules,
+            **longbeach_location_rules,
+            **mountside_location_rules,
+            **nightclimb_location_rules,
+            **nightwalk_location_rules,
+            **rainbowdive_location_rules,
+            **skylands_location_rules,
+            **skysand_location_rules,
+            **sky_town_location_rules,
+            **staircase_location_rules,
+            **stonecastle_location_rules,
+            **strangecastle_location_rules,
+            **undertomb_location_rules,
+
+            # Must go at the end for Reasons.
+            **final_climb_location_rules,
         }
 
         self.boss_drop_values = {
@@ -201,10 +404,10 @@ class AUSRules:
 
     def jump_height(self, state: CollectionState) -> int:
         count: int
-        if state.count("Jump Upgrade", self.player) == 3 and state.count("Double Jump Upgrade", self.player) == 1:
+        if state.count(I_JUMP_UPGRADE, self.player) == 3 and state.count(I_DOUBLE_JUMP, self.player) == 1:
             count = 6.5
         else:
-            count = state.count("Jump Upgrade", self.player) + state.count("Double Jump Upgrade", self.player) + 2
+            count = state.count(I_JUMP_UPGRADE, self.player) + state.count(I_DOUBLE_JUMP, self.player) + 2
         return count
     
     def jump_height_min(self, state: CollectionState, amount: int) -> bool:
@@ -212,53 +415,50 @@ class AUSRules:
         return count >= amount
 
     def single_jump_min(self, state: CollectionState, amount: int) -> bool:
-        return state.count("Jump Upgrade", self.player) >= amount
+        return state.count(I_JUMP_UPGRADE, self.player) >= amount
 
     def double_jump_height(self, state: CollectionState) -> int:
-        return state.count("Double Jump Upgrade", self.player)
+        return state.count(I_DOUBLE_JUMP, self.player)
 
     def double_jump_min(self, state: CollectionState, amount: int) -> bool:
-        return state.count("Double Jump Upgrade", self.player) >= amount
+        return state.count(I_DOUBLE_JUMP, self.player) >= amount
 
     def has_red_energy(self, state: CollectionState) -> bool:
-        return state.has("Red Energy", self.player)
+        return state.has(I_RED_ENERGY, self.player)
 
     def has_yellow_energy(self, state: CollectionState) -> bool:
-        return state.has("Yellow Energy", self.player)
+        return state.has(I_YELLOW_ENERGY, self.player)
 
-    def can_crouch(self, state: CollectionState) -> bool:
-        return state.has("Duck", self.player)
+    def can_duck(self, state: CollectionState) -> bool:
+        return state.has(I_DUCKING, self.player)
 
     def can_stick(self, state: CollectionState) -> bool:
-        return state.has("Progressive Ceiling Stick", self.player)
+        return state.has(I_STICKING, self.player)
     
     def can_slide(self, state: CollectionState) -> bool:
-        return state.has("Progressive Ceiling Stick", self.player, 2)
+        return state.has(I_STICKING, self.player, 2)
 
-    def can_smash(self, state: CollectionState) -> bool:
-        return state.has("Smash", self.player)
+    def can_divebomb(self, state: CollectionState) -> bool:
+        return state.has(I_DIVE_BOMB, self.player)
     
     def has_fire(self, state: CollectionState) -> bool:
-        return state.has("Progressive Fire Shot", self.player)
+        return state.has(I_SHOOT_FIRE, self.player)
     
     def has_range(self, state: CollectionState) -> bool:
-        return state.has("Progressive Fire Shot", self.player, 2)
+        return state.has(I_SHOOT_FIRE, self.player, 2)
     
     def has_ice(self, state: CollectionState) -> bool:
-        return state.has("Ice Shot", self.player)
+        return state.has(I_SHOOT_ICE, self.player)
     
     def can_shoot(self, state: CollectionState) -> bool:
         return self.has_fire(state) or self.has_ice(state)
     
     def can_light_torches(self, state: CollectionState) -> bool:
-        return self.has_fire(state) or self.can_smash(state)
+        return self.has_fire(state) or self.can_divebomb(state)
     
     def hatched(self, state: CollectionState) -> bool:
-        return state.has("Hatch", self.player)    
+        return state.has(I_HATCH, self.player)
 
-    def true(self, state: CollectionState) -> bool:
-        """Hi Messenger!"""
-        return True
 
 
     def set_aus_rules(self) -> None:
@@ -272,4 +472,8 @@ class AUSRules:
                 if loc.name in self.location_rules:
                     loc.access_rule = self.location_rules[loc.name]
 
-        multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
+        multiworld.completion_condition[self.player] = lambda state: state.has(VICTORY, self.player)
+
+def true(state: CollectionState) -> bool:
+    """Hi Messenger!"""
+    return True

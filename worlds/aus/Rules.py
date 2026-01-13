@@ -280,10 +280,10 @@ class AUSRules:
             L_SKYSAND_FLOWER: true,
             L_SKYSAND_BOTTOMSAVE: lambda state: self.has_ice(state) and (
                         self.has_red_energy(state) or self.jump_height_min(state, 8)) and self.can_stick(state),
-            L_SKYSAND_POSTBOSS: lambda state: self.has_yellow_energy(state) and self.double_jump_min(state, 3),
+            L_SKYSAND_POSTBOSS: true,
             L_SKYSAND_BOSS: true,
             L_SKYSAND_UPPERDOOR: true,
-            L_SKYSAND_YELLOW: true,
+            L_SKYSAND_YELLOW: lambda state: self.has_yellow_energy(state) and self.double_jump_min(state, 3),
             L_SKYSAND_LOWERDOOR: true,
             L_SKYSAND_CHEST: true,
         }

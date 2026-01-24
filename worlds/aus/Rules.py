@@ -107,8 +107,8 @@ class AUSRules:
             L_DARK_GROTTO_UPPER: lambda state: self.has_yellow_energy(state) and self.jump_height_min(state, 7),
             L_DARK_GROTTO_CAMPSITE: true,
             L_DARK_GROTTO_BOSS: true,
-            L_DARK_GROTTO_POSTBOSS: lambda state: self.has_red_energy(state),
-            L_DARK_GROTTO_TORCHES: lambda state: self.can_light_torches(state) and self.has_red_energy(state),
+            L_DARK_GROTTO_POSTBOSS: true,
+            L_DARK_GROTTO_TORCHES: lambda state: self.can_light_torches(state),
             L_DARK_GROTTO_FLOWER: true,
         }
 
@@ -171,8 +171,8 @@ class AUSRules:
             L_FIRECAGE_LEFTSAVE: true,
             L_FIRECAGE_CRUSHERS: lambda state: self.has_fire(state),
             L_FIRECAGE_UPPERDOOR: true,
-            L_FIRECAGE_MIDDLE: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
-            L_FIRECAGE_LOWERDOOR: lambda state: self.jump_height_min(state, 8) and self.has_yellow_energy(state),
+            L_FIRECAGE_MIDDLE: lambda state: self.jump_height_min(state, 8) and self.has_yellow_energy(state),
+            L_FIRECAGE_LOWERDOOR: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
             L_FIRECAGE_RIGHTSAVE: lambda state: self.jump_height_min(state, 6.5) and self.can_slide(
                 state) and self.has_yellow_energy(state),
             L_FIRECAGE_POSTBOSS: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),

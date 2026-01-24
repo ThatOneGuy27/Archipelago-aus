@@ -41,7 +41,7 @@ class AUSRules:
             A_BLANCLAND: lambda state: self.jump_height_min(state, 8) and state.has(I_AIR_UPGRADE, self.player),
             R_DEEPDIVE_RIGHT: lambda state: self.jump_height_min(state, 7) and (self.single_jump_min(state, 3) or self.can_slide(state)),
             A_BLACKCASTLE: lambda state: state.has(I_GOLD_ORB, self.player, self.ORB_COUNT) and self.single_jump_min(state, 3) and
-                                         self.double_jump_min(state, 2) and self.can_divebomb(state) and self.can_slide(state),
+                                         self.double_jump_min(state, 2) and self.can_divebomb(state) and self.can_slide(state) and self.has_red_energy(state),
         }
 
         arcade_location_rules = {
@@ -107,8 +107,8 @@ class AUSRules:
             L_DARK_GROTTO_UPPER: lambda state: self.has_yellow_energy(state) and self.jump_height_min(state, 7),
             L_DARK_GROTTO_CAMPSITE: true,
             L_DARK_GROTTO_BOSS: true,
-            L_DARK_GROTTO_POSTBOSS: true,
-            L_DARK_GROTTO_TORCHES: lambda state: self.can_light_torches(state),
+            L_DARK_GROTTO_POSTBOSS: lambda state: self.has_red_energy(state),
+            L_DARK_GROTTO_TORCHES: lambda state: self.can_light_torches(state) and self.has_red_energy(state),
             L_DARK_GROTTO_FLOWER: true,
         }
 
@@ -280,10 +280,10 @@ class AUSRules:
             L_SKYSAND_FLOWER: true,
             L_SKYSAND_BOTTOMSAVE: lambda state: self.has_ice(state) and (
                         self.has_red_energy(state) or self.jump_height_min(state, 8)) and self.can_stick(state),
-            L_SKYSAND_POSTBOSS: lambda state: self.has_yellow_energy(state) and self.double_jump_min(state, 3),
+            L_SKYSAND_POSTBOSS: true,
             L_SKYSAND_BOSS: true,
             L_SKYSAND_UPPERDOOR: true,
-            L_SKYSAND_YELLOW: true,
+            L_SKYSAND_YELLOW: lambda state: self.has_yellow_energy(state) and self.double_jump_min(state, 3),
             L_SKYSAND_LOWERDOOR: true,
             L_SKYSAND_CHEST: true,
         }

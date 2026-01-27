@@ -304,7 +304,7 @@ class AUSRules:
             L_SKY_TOWN_FLOWER: lambda state: self.jump_height_min(state, 4),
             L_SKY_TOWN_PITLEFT: lambda state: self.jump_height_min(state, 5) and self.has_fire(state),
             # ST_PIT: lambda state: self.jump_height_min(state, 4),
-            L_SKY_TOWN_PITRIGHT: lambda state: (self.jump_height_min(state, 3) and self.can_slide(
+            L_SKY_TOWN_PITRIGHT: lambda state: (self.jump_height_min(state, 4) and self.can_slide(
                 state)) or self.double_jump_min(state, 2),
         }
 

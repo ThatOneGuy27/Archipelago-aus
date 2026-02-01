@@ -41,7 +41,7 @@ class AUSRules:
             A_BLANCLAND: lambda state: self.jump_height_min(state, 8) and state.has(I_AIR_UPGRADE, self.player),
             R_DEEPDIVE_RIGHT: lambda state: self.jump_height_min(state, 7) and (self.single_jump_min(state, 3) or self.can_slide(state)),
             A_BLACKCASTLE: lambda state: state.has(I_GOLD_ORB, self.player, self.ORB_COUNT) and self.single_jump_min(state, 3) and
-                                         self.double_jump_min(state, 2) and self.can_divebomb(state) and self.can_slide(state) and self.has_red_energy(state),
+                                         self.double_jump_min(state, 2) and self.can_divebomb(state) and self.can_slide(state) and self.has_red_energy(state) and self.can_shoot(state),
         }
 
         arcade_location_rules = {

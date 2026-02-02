@@ -262,7 +262,7 @@ class AUSRules:
             L_RAINBOWDIVE_4TH: true,
             L_RAINBOWDIVE_3RD: true,
             L_RAINBOWDIVE_2ND: true,
-            L_RAINBOWDIVE_1ST: true,
+            L_RAINBOWDIVE_1ST: lambda state: self.can_shoot(state),
         }
 
         skylands_location_rules = {

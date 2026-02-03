@@ -241,7 +241,7 @@ class AUSRules:
             L_NIGHTWALK_UPPEREND: true,
             L_NIGHTWALK_NESTFLOWER: true,
             L_NIGHTWALK_LOWERFLOWER: lambda state: self.jump_height_min(state, 5),
-            L_NIGHTWALK_SKYRED: lambda state: (self.can_duck(state) and self.jump_height_min(state, 6) and (
+            L_NIGHTWALK_SKYRED: lambda state: (self.can_duck(state) and self.jump_height_min(state, 6) and self.has_red_energy(state) and (
                         self.double_jump_min(state, 2) or self.can_slide(state))) or state.can_reach(A_THE_CURTAIN,
                                                                                                      "Region",
                                                                                                      self.player),

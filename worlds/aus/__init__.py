@@ -80,3 +80,12 @@ class AUSWorld(World):
     def get_filler_item_name(self) -> str:
         # I think this might crash? There's no item named this. -Bunne
         return "A cool rock"
+        
+        
+    def fill_slot_data(self) -> dict[str, object]:
+        return {
+            "gold_orbs_required": self.options.gold_orbs_required.value,
+            "difficulty": self.options.difficulty.value,
+            "DeathLink": bool(self.options.death_link)
+        }
+        

@@ -17,7 +17,7 @@ class AUSRules:
     boss_drop_values: Dict[str, int]
     maximum_price: int
     required_seals: int 
-    ORB_COUNT: int = 7
+    #ORB_COUNT: int = 7
 
     def __init__(self, world: "AUSWorld") -> None:
         self.player = world.player
@@ -27,7 +27,7 @@ class AUSRules:
             A_NIGHTCLIMB: lambda state: self.jump_height_min(state, 5) and self.has_fire(state) and self.double_jump_min(state, 1),
             A_DEEPDIVE: lambda state: self.jump_height(state) + (self.can_duck(state) and self.has_red_energy(state)) * 2 >= 8 and
                                       self.hatched(state) and self.can_divebomb(state),
-            A_FIRECAGE: lambda state: self.can_stick(state) and self.has_red_energy(state) and self.can_shoot(state),
+            A_FIRECAGE: lambda state: self.can_stick(state) and self.has_red_energy(state),
             A_MOUNTSIDE: lambda state: self.jump_height(state) + self.can_duck(state) * 2 >= 8 and
                                        self.has_red_energy(state) and self.hatched(state),
             A_THE_CURTAIN: lambda state: self.jump_height_min(state, 8) and self.can_slide(state) and
@@ -40,8 +40,8 @@ class AUSRules:
             A_THE_BOTTOM: lambda state: self.jump_height_min(state, 6.5) and self.can_slide(state) and self.hatched(state),
             A_BLANCLAND: lambda state: self.jump_height_min(state, 8) and state.has(I_AIR_UPGRADE, self.player),
             R_DEEPDIVE_RIGHT: lambda state: self.jump_height_min(state, 7) and (self.single_jump_min(state, 3) or self.can_slide(state)),
-            A_BLACKCASTLE: lambda state: state.has(I_GOLD_ORB, self.player, self.ORB_COUNT) and self.single_jump_min(state, 3) and
-                                         self.double_jump_min(state, 2) and self.can_divebomb(state) and self.can_slide(state) and self.has_red_energy(state) and self.can_shoot(state),
+            A_BLACKCASTLE: lambda state: state.has(I_GOLD_ORB, self.player, world.options.gold_orbs_required) and self.single_jump_min(state, 3) and
+                                         self.double_jump_min(state, 2) and self.can_divebomb(state) and self.can_slide(state) and self.has_red_energy(state) and self.has_fire(state),
         }
 
         arcade_location_rules = {
@@ -169,7 +169,7 @@ class AUSRules:
         firecage_location_rules = {
             L_FIRECAGE_TOLL: lambda state: (self.can_slide(state) or self.has_fire(state)),
             L_FIRECAGE_LEFTSAVE: true,
-            L_FIRECAGE_CRUSHERS: lambda state: self.has_fire(state),
+            L_FIRECAGE_CRUSHERS: lambda state: self.can_shoot(state),
             L_FIRECAGE_UPPERDOOR: true,
             L_FIRECAGE_MIDDLE: lambda state: self.jump_height_min(state, 8) and self.has_yellow_energy(state),
             L_FIRECAGE_LOWERDOOR: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
@@ -241,8 +241,8 @@ class AUSRules:
             L_NIGHTWALK_UPPEREND: true,
             L_NIGHTWALK_NESTFLOWER: true,
             L_NIGHTWALK_LOWERFLOWER: lambda state: self.jump_height_min(state, 5),
-            L_NIGHTWALK_SKYRED: lambda state: (self.can_duck(state) and self.jump_height_min(state, 6) and self.has_red_energy(state) and (
-                        self.double_jump_min(state, 2) or self.can_slide(state))) or state.can_reach(A_THE_CURTAIN,
+            L_NIGHTWALK_SKYRED: lambda state: (self.can_duck(state) and self.jump_height_min(state, 6) and (self.has_red_energy(state) and (
+                        self.double_jump_min(state, 2) or self.can_slide(state)) or (self.double_jump_min(state, 3) and self.can_slide(state)))) or state.can_reach(A_THE_CURTAIN,
                                                                                                      "Region",
                                                                                                      self.player),
             L_NIGHTWALK_FIRST: true,
@@ -262,7 +262,7 @@ class AUSRules:
             L_RAINBOWDIVE_4TH: true,
             L_RAINBOWDIVE_3RD: true,
             L_RAINBOWDIVE_2ND: true,
-            L_RAINBOWDIVE_1ST: lambda state: self.can_shoot(state),
+            L_RAINBOWDIVE_1ST: lambda state: self.has_fire(state),
         }
 
         skylands_location_rules = {

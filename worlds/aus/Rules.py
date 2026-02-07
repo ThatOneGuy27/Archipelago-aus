@@ -17,7 +17,6 @@ class AUSRules:
     boss_drop_values: Dict[str, int]
     maximum_price: int
     required_seals: int 
-    #ORB_COUNT: int = 7
 
     def __init__(self, world: "AUSWorld") -> None:
         self.player = world.player
@@ -45,15 +44,15 @@ class AUSRules:
         }
 
         arcade_location_rules = {
-            L_SKY_TOWN_ASTROCRASH: true,
-            L_SKY_TOWN_JUMPBOX: true,
-            L_SKY_TOWN_KEEPGOING: true,
+            L_SKY_TOWN_ASTROCRASH: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 1400) and self.hatched(state),
+            L_SKY_TOWN_JUMPBOX: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 1600) and self.hatched(state),
+            L_SKY_TOWN_KEEPGOING: lambda state: self.jump_height_min(state, 4) and self.total_money(state, 1800) and self.hatched(state),
         }
 
         blackcastle_location_rules = {
             L_BLACKCASTLE_BOSS: true,
-            L_BLACKCASTLE_FLOWER: lambda state: self.has_fire(state),
-            L_BLACKCASTLE_REDBLOCKS: lambda state: self.can_shoot(state),
+            L_BLACKCASTLE_FLOWER: true,
+            L_BLACKCASTLE_REDBLOCKS: true
         }
 
         blancland_location_rules = {
@@ -373,6 +372,7 @@ class AUSRules:
             **stonecastle_location_rules,
             **strangecastle_location_rules,
             **undertomb_location_rules,
+            **arcade_location_rules,
 
             # Must go at the end for Reasons.
             **final_climb_location_rules,

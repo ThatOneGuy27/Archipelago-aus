@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from Options import Choice, Option, Toggle, Range, PerGameCommonOptions, DeathLinkMixin
+from Options import Choice, Option, Toggle, Range, NamedRange, PerGameCommonOptions, DeathLinkMixin
 
-class IsCool(Toggle):
-    """Determines whether the user is cool and checked this option. [Testing only, no gameplay effect.]"""
-    display_name = "Is Cool"
-
+class ArcadeOptions():
+    OFF = 0
+    PURCHASE_ONLY = 1
+    MUST_WIN = 2
 
 class GoldOrbsRequired(Range):
     """
@@ -17,11 +17,11 @@ class GoldOrbsRequired(Range):
     range_start = 0
     range_end = 10
     
-class DifficultySelector(Range):
+class DifficultySelector(NamedRange):
     """
     The difficulty the game will be set to.
     0 = Simple
-    1 = Regular
+    1 = Regular (recommended)
     2 = Difficult
     3 = Masterful
     4 = Insanity (Masterful + one hit kill)
@@ -32,12 +32,67 @@ class DifficultySelector(Range):
     default = 1
     range_start = 0
     range_end = 4
+    special_range_names = {
+        "simple": 0,
+        "regular": 1,
+        "difficult": 2,
+        "masterful": 3,
+        "insanity": 4,
+    }
+    
+class ArcadeMode(Choice):
+    """Determines the behaviour of the three arcade machines in SkyTown.
+    OFF - The arcade machines are disabled. 3 hearts are removed from the pool
+    PURCHASE_ONLY - The arcade machines must be purchased but you don't have to play them to get the check
+    MUST_WIN - You must purchase the arcade machine AND get the high score to get the check. (Note the JumpBox minigame is quite difficult)"""
+    display_name = "Arcade Behaviour"
+    default = ArcadeOptions.PURCHASE_ONLY
+    option_off = ArcadeOptions.OFF
+    option_purchase_only = ArcadeOptions.PURCHASE_ONLY
+    option_must_win = ArcadeOptions.MUST_WIN
+
+class EasyRainbowDive(Toggle):
+    """Makes the RainbowDive checks easier by significantly reducing the amount of points required for each prize"""
+    display_name = "Easy RainbowDive"
+
+class DisableHeartBarriers(Toggle):
+    """Removes all heart barriers from the world, making their checks easier by not requiring you to reach them without taking damage"""
+    display_name = "Disable All Heart Barriers"
+
+class GhostSpawnRate(Range):
+    """
+    Percentage chance of ghosts spawning, per room. 0 is disabled, 100 means they appear every room.
+    Note that not all rooms have ghosts enabled in the first place.
+    Ghosts won't spawn until you find at least 1 gold orb.
+    In vanilla on Regular, this number would be about 5, for reference.
+    Must be between 0 and 100.
+    """
+    display_name = "Ghost Spawn Chance (Percentage)"
+    default = 5
+    range_start = 0
+    range_end = 100
+
+class SpecialBossMusic(Range):
+    """
+    Percentage chance of using the special insanity boss music when fighting a (non-unique) boss.
+    Purely cosmetic and has no gameplay effect.
+    Must be between 0 and 100.
+    """
+    display_name = "Special Boss Music (Percentage)"
+    default = 0
+    range_start = 0
+    range_end = 100
     
     
 @dataclass
 class AUSOptions(PerGameCommonOptions, DeathLinkMixin):
-    is_cool: IsCool
     gold_orbs_required: GoldOrbsRequired
     difficulty: DifficultySelector
+    arcade_mode: ArcadeMode
+    easy_rainbowdive: EasyRainbowDive
+    disable_heart_barriers: DisableHeartBarriers
+    ghost_spawn_rate: GhostSpawnRate
+    special_boss_music: SpecialBossMusic
+    
   
   

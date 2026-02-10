@@ -282,7 +282,7 @@ undertomb_location_table = {
     L_UNDERTOMB_RIGHTDOOR: LocData(72193, A_LONGBEACH),
 }
 
-full_location_table = {
+base_location_table = {
     **blackcastle_location_table,
     **blancland_location_table,
     **bonus_location_table,
@@ -311,7 +311,5 @@ full_location_table = {
     **stonecastle_location_table,
     **strangecastle_location_table,
     **undertomb_location_table,
-
-    # Must go at the end for Reasons.
-    **final_climb_location_table,
+    #arcade and final climb are now added in init
 }

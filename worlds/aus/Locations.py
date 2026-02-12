@@ -69,7 +69,7 @@ coldkeep_location_table = {
 }
 
 the_curtain_location_table = {
-    L_THE_CURTAIN_FLOWER: LocData(72351, A_THE_CURTAIN),
+    L_THE_CURTAIN_FLOWER: LocData(72351, A_MOUNTSIDE),
     L_THE_CURTAIN_KILL: LocData(72161, A_THE_CURTAIN),
     L_THE_CURTAIN_BREAKABLE: LocData(72159, A_THE_CURTAIN),
     L_THE_CURTAIN_BOSS: LocData(72414, A_THE_CURTAIN),

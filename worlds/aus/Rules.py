@@ -26,7 +26,7 @@ class AUSRules:
             A_NIGHTCLIMB: lambda state: self.jump_height_min(state, 5) and self.has_fire(state) and self.double_jump_min(state, 1),
             A_DEEPDIVE: lambda state: self.jump_height(state) + (self.can_duck(state) and self.has_red_energy(state)) * 2 >= 8 and
                                       self.can_divebomb(state) and (self.hatched(state) or (world.options.hard_logic and self.jump_height_min(state, 8))),
-            A_FIRECAGE: lambda state: self.can_stick(state) and self.has_red_energy(state),
+            A_FIRECAGE: lambda state: self.can_stick(state) and self.has_red_energy(state) and self.single_jump_min(state, 2) and (self.can_shoot(state) or world.options.hard_logic),
             A_MOUNTSIDE: lambda state: self.jump_height(state) + self.can_duck(state) * 2 >= 8 and
                                        self.has_red_energy(state) and (self.hatched(state) or (world.options.hard_logic and self.jump_height_min(state, 8))),
             A_THE_CURTAIN: lambda state: self.jump_height_min(state, 8) and self.can_slide(state) and
@@ -87,7 +87,7 @@ class AUSRules:
         }
 
         coldkeep_location_rules = {
-            L_COLDKEEP_CANNON: lambda state: self.jump_height_min(state, 5) and self.has_ice(state),
+            L_COLDKEEP_CANNON: lambda state: self.has_ice(state) and (self.jump_height_min(state, 5) or (world.options.closed_end_logic and self.jump_height_min(state, 4))),
             L_COLDKEEP_BOSS: lambda state: self.jump_height_min(state, 5) or (world.options.hard_logic and self.jump_height_min(state, 4) and (self.can_divebomb(state) or self.has_ice(state))),
             L_COLDKEEP_POSTBOSS: lambda state: self.jump_height_min(state, 5) or (world.options.hard_logic and self.jump_height_min(state, 4) and (self.can_divebomb(state) or self.has_ice(state))),
             L_COLDKEEP_UPPER: lambda state: self.jump_height_min(state, 4),
@@ -137,14 +137,13 @@ class AUSRules:
             L_DEEPTOWER_DOOR: true,
             L_DEEPTOWER_BOSS: lambda state: self.jump_height_min(state, 4),
             L_DEEPTOWER_POSTBOSS: lambda state: self.jump_height_min(state, 4),
-            L_DEEPTOWER_SPIKES: lambda state: self.jump_height_min(state, 4) and (
-                        self.double_jump_height(state) + self.can_slide(state)),
+            L_DEEPTOWER_SPIKES: lambda state: self.jump_height_min(state, 4) and (self.double_jump_height(state) + self.can_slide(state)),
         }
 
         farfall_location_rules = {
-            L_FARFALL_KILL: lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state, 1),    #considered part of stonecastle
+            L_FARFALL_KILL: lambda state: self.double_jump_min(state, 1) and (self.jump_height_min(state, 5) or (world.options.hard_logic and self.jump_height_min(state, 4))),    #considered part of stonecastle
             L_FARFALL_CHEST: lambda state: self.jump_height_min(state, 4),    #considered part of stonecastle
-            L_FARFALL_5BALLOONS: lambda state: self.jump_height_min(state, 7) and self.hatched(state),
+            L_FARFALL_5BALLOONS: lambda state: (self.jump_height_min(state, 7) or (world.options.hard_logic and self.jump_height_min(state, 6))) and self.hatched(state),
             L_FARFALL_SPECIALBALLOON: true,    #considered part of the bottom
             L_FARFALL_PITDOOR: lambda state: self.jump_height_min(state, 5) and self.double_jump_min(state,
                                                                                                      1) and self.can_divebomb(
@@ -171,17 +170,16 @@ class AUSRules:
             L_FIRECAGE_LEFTSAVE: true,
             L_FIRECAGE_CRUSHERS: lambda state: self.can_shoot(state),
             L_FIRECAGE_UPPERDOOR: true,
-            L_FIRECAGE_MIDDLE: lambda state: self.jump_height_min(state, 8) and self.has_yellow_energy(state),
-            L_FIRECAGE_LOWERDOOR: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state),
-            L_FIRECAGE_RIGHTSAVE: lambda state: self.jump_height_min(state, 6.5) and self.can_slide(
-                state) and self.has_yellow_energy(state),
-            L_FIRECAGE_POSTBOSS: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state) and self.hatched(state),
-            L_FIRECAGE_BOSS: lambda state: self.jump_height_min(state, 6.5) and self.has_yellow_energy(state) and self.hatched(state),
+            L_FIRECAGE_MIDDLE: lambda state: self.jump_height_min(state, 8) and (self.has_yellow_energy(state) or world.options.closed_end_logic),
+            L_FIRECAGE_LOWERDOOR: lambda state: self.jump_height_min(state, 6.5) and (self.has_yellow_energy(state) or world.options.closed_end_logic),
+            L_FIRECAGE_RIGHTSAVE: lambda state: self.jump_height_min(state, 6.5) and self.can_slide(state) and self.has_yellow_energy(state),
+            L_FIRECAGE_POSTBOSS: lambda state: self.jump_height_min(state, 6.5) and (self.has_yellow_energy(state) or world.options.closed_end_logic) and self.hatched(state),
+            L_FIRECAGE_BOSS: lambda state: self.jump_height_min(state, 6.5) and (self.has_yellow_energy(state) or world.options.closed_end_logic) and self.hatched(state),
         }
 
         grotto_location_rules = {
-            L_GROTTO_POSTBOSS: lambda state: self.jump_height_min(state, 3.5),
-            L_GROTTO_BOSS: lambda state: self.jump_height_min(state, 3.5),
+            L_GROTTO_POSTBOSS: lambda state: self.jump_height_min(state, 4) or (world.options.closed_end_logic and self.jump_height_min(state, 3)),
+            L_GROTTO_BOSS: lambda state: self.jump_height_min(state, 4) or (world.options.closed_end_logic and self.jump_height_min(state, 3)),
             L_GROTTO_FLOWER: lambda state: (self.jump_height(state) + (
                     self.can_duck(state) and self.has_red_energy(state)) * 2 >= 8) and (self.hatched(state) or (world.options.hard_logic and self.jump_height_min(state, 8))),
             L_GROTTO_MURAL: lambda state: self.jump_height_min(state, 4) and
@@ -222,7 +220,7 @@ class AUSRules:
         }
 
         mountside_location_rules = {
-            L_MOUNTSIDE_FLOWER: lambda state: self.double_jump_min(state, 3),
+            L_MOUNTSIDE_FLOWER: lambda state: self.double_jump_min(state, 3) or world.options.closed_end_logic,
             L_MOUNTSIDE_DOOR: true,
         }
 
@@ -316,7 +314,7 @@ class AUSRules:
         }
 
         stonecastle_location_rules = {
-            L_STONECASTLE_FLOWER: lambda state: self.jump_height_min(state, 5) or (world.options.hard_logic and self.jump_height_min(state, 4) and self.double_jump_min(state, 1) and self.can_slide(state)),
+            L_STONECASTLE_FLOWER: lambda state: self.jump_height_min(state, 5) or (self.jump_height_min(state, 4) and self.double_jump_min(state, 1) and self.can_slide(state)),
             L_STONECASTLE_UPPER: lambda state: (self.jump_height_min(state, 8) or (world.options.hard_logic and self.single_jump_min(state, 3) and self.double_jump_min(state, 2)))
                 and self.has_red_energy(state) and self.has_yellow_energy(state),
             L_STONECASTLE_DOOR: lambda state: self.jump_height_min(state, 4),
@@ -328,14 +326,14 @@ class AUSRules:
                 and self.has_red_energy(state) and self.has_yellow_energy(state) and self.can_slide(state) and self.can_divebomb(state),
             L_STONECASTLE_POSTBOSS: lambda state: ((self.jump_height_min(state, 4) and self.double_jump_min(state,
                                                                                                             1)) or self.jump_height_min(
-                state, 5)) and self.can_divebomb(state) and self.has_red_energy(state),
+                state, 5)) and (self.can_divebomb(state) or world.options.closed_end_logic) and self.has_red_energy(state),
             L_STONECASTLE_POSTBOSS2: lambda state: (self.jump_height_min(state, 8) or (world.options.hard_logic and self.single_jump_min(state, 3) and self.double_jump_min(state, 2)))
                 and self.has_red_energy(state) and self.has_yellow_energy(state) and self.can_slide(state) and self.can_divebomb(state),
         }
 
         strangecastle_location_rules = {
-            L_STRANGECASTLE_END: lambda state: self.jump_height_min(state, 6) and self.has_fire(state),
-            L_STRANGECASTLE_DOOR: lambda state: self.jump_height_min(state, 6) and self.has_fire(state),
+            L_STRANGECASTLE_END: lambda state: self.jump_height_min(state, 6) and self.single_jump_min(state, 2) and self.has_fire(state),
+            L_STRANGECASTLE_DOOR: lambda state: self.jump_height_min(state, 6) and self.single_jump_min(state, 2) and self.has_fire(state),
         }
 
         undertomb_location_rules = {

@@ -104,6 +104,7 @@ class AUSWorld(World):
             "ghost_spawn_rate": self.options.ghost_spawn_rate.value,
             "special_boss_music": self.options.special_boss_music.value,
             "hard_logic": self.options.hard_logic.value,
+            "closed_end_logic": self.options.closed_end_logic.value,
             "DeathLink": bool(self.options.death_link)
         }
         
